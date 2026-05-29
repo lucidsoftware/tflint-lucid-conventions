@@ -1,0 +1,4 @@
+# don't track built binary
+/tflint-lucid-conventions
+# allow creating a config file for local testing
+/.tflint.hcl
