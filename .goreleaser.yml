@@ -2,7 +2,8 @@ version: 2
 env:
   - CGO_ENABLED=0
 builds:
-  - targets:
+  - binary: tflint-ruleset-lucid-conventions
+    targets:
       - darwin_amd64
       - darwin_arm64
       - linux_386
@@ -14,10 +15,10 @@ builds:
     hooks:
       post:
         - mkdir -p ./dist/raw
-        - cp "{{ .Path }}" "./dist/raw/{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+        - cp "{{ .Path }}" "./dist/raw/tflint-ruleset-lucid-conventions_{{ .Os }}_{{ .Arch }}"
 archives:
   - id: zip
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "tflint-ruleset-lucid-conventions_{{ .Os }}_{{ .Arch }}"
     formats:
       - zip
     files:
