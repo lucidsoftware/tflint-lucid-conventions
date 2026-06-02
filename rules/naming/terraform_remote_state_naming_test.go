@@ -174,6 +174,36 @@ data "aws_caller_identity" "preprod_us" {}`,
 			Expected: helper.Issues{},
 		},
 		{
+			// Regression: data sources with nested blocks (e.g. statement {})
+			// must not trip the rule's schema. The rule should silently ignore
+			// any data block that isn't a terraform_remote_state.
+			Name: "data source with nested blocks - not affected",
+			Content: `
+data "aws_iam_policy_document" "example" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["arn:aws:s3:::example/*"]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
+  statement {
+    actions = ["s3:PutObject"]
+  }
+}
+
+data "terraform_remote_state" "com_preprod_us" {
+  backend = "s3"
+  config = {
+    bucket = "*************-spacelift-states-******"
+    key    = "1/com-preprod-us"
+    region = "us-east-1"
+  }
+}`,
+			Expected: helper.Issues{},
+		},
+		{
 			Name: "multiple blocks - mixed correctness",
 			Content: `
 data "terraform_remote_state" "com_preprod_us" {

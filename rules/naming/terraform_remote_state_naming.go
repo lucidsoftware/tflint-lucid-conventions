@@ -49,13 +49,20 @@ func (r *TerraformRemoteStateNamingRule) Link() string {
 }
 
 func (r *TerraformRemoteStateNamingRule) Check(runner tflint.Runner) error {
+	// Ask only for the `config` attribute. We don't use SchemaJustAttributesMode
+	// because that errors on any nested block inside a data block — which would
+	// trip on legitimate data sources like aws_iam_policy_document that contain
+	// `statement {}` sub-blocks. Declaring only the attribute we need silently
+	// ignores everything else.
 	content, err := runner.GetModuleContent(&hclext.BodySchema{
 		Blocks: []hclext.BlockSchema{
 			{
 				Type:       "data",
 				LabelNames: []string{"type", "name"},
 				Body: &hclext.BodySchema{
-					Mode: hclext.SchemaJustAttributesMode,
+					Attributes: []hclext.AttributeSchema{
+						{Name: "config"},
+					},
 				},
 			},
 		},
