@@ -105,6 +105,19 @@ data "terraform_remote_state" "legacy_bi" {
 			Expected: helper.Issues{},
 		},
 		{
+			Name: "spacelift legacy key with spacelift_install name - no issue",
+			Content: `
+data "terraform_remote_state" "spacelift_install" {
+  backend = "s3"
+  config = {
+    bucket = "lucid-terraform-gov"
+    key    = "spacelift"
+    region = "us-gov-west-1"
+  }
+}`,
+			Expected: helper.Issues{},
+		},
+		{
 			Name: "legacy bare key without legacy_ prefix - issue",
 			Content: `
 data "terraform_remote_state" "utility_infrastructure" {
