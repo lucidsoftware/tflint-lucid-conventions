@@ -24,8 +24,8 @@ import (
 //     "legacy_".
 //     e.g. key="tfstate" => name="legacy_bi" (or any legacy_* name)
 //
-// Historic `spacelift` and `devcloud` states are exceptions: their consumers
-// are conventionally named `spacelift_install` and `devcloud_install`.
+// Historic `spacelift` and `account` states are exceptions: their consumers
+// are conventionally named `spacelift_install` and `account`.
 type TerraformRemoteStateNamingRule struct {
 	tflint.DefaultRule
 }
@@ -109,7 +109,7 @@ func (r *TerraformRemoteStateNamingRule) Check(runner tflint.Runner) error {
 			}
 		} else {
 			if (key == "spacelift" && name == "spacelift_install") ||
-				(key == "devcloud" && name == "devcloud_install") {
+				(key == "account" && name == "account") {
 				continue
 			}
 			if !strings.HasPrefix(name, "legacy_") {

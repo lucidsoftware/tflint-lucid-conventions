@@ -118,22 +118,22 @@ data "terraform_remote_state" "spacelift_install" {
 			Expected: helper.Issues{},
 		},
 		{
-			Name: "devcloud legacy key with devcloud_install name - no issue",
+			Name: "account legacy key with account name - no issue",
 			Content: `
-data "terraform_remote_state" "devcloud_install" {
+data "terraform_remote_state" "account" {
   backend = "s3"
   config = {
     bucket = "lucid-terraform"
-    key    = "devcloud"
+    key    = "account"
     region = "us-east-1"
   }
 }`,
 			Expected: helper.Issues{},
 		},
 		{
-			Name: "devcloud_install name with another legacy key - issue",
+			Name: "account name with another legacy key - issue",
 			Content: `
-data "terraform_remote_state" "devcloud_install" {
+data "terraform_remote_state" "account" {
   backend = "s3"
   config = {
     bucket = "lucid-terraform"
@@ -144,7 +144,30 @@ data "terraform_remote_state" "devcloud_install" {
 			Expected: helper.Issues{
 				{
 					Rule:    &TerraformRemoteStateNamingRule{},
-					Message: `local name "devcloud_install" references legacy key "tfstate" and must start with the prefix "legacy_"`,
+					Message: `local name "account" references legacy key "tfstate" and must start with the prefix "legacy_"`,
+					Range: hcl.Range{
+						Filename: "resource.tf",
+						Start:    hcl.Pos{Line: 2, Column: 1},
+						End:      hcl.Pos{Line: 2, Column: 40},
+					},
+				},
+			},
+		},
+		{
+			Name: "devcloud key with devcloud_install name - issue",
+			Content: `
+data "terraform_remote_state" "devcloud_install" {
+  backend = "s3"
+  config = {
+    bucket = "lucid-terraform"
+    key    = "devcloud"
+    region = "us-east-1"
+  }
+}`,
+			Expected: helper.Issues{
+				{
+					Rule:    &TerraformRemoteStateNamingRule{},
+					Message: `local name "devcloud_install" references legacy key "devcloud" and must start with the prefix "legacy_"`,
 					Range: hcl.Range{
 						Filename: "resource.tf",
 						Start:    hcl.Pos{Line: 2, Column: 1},
