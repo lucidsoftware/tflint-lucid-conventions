@@ -62,7 +62,7 @@ Enforces local-name conventions on `data "terraform_remote_state"` declarations.
 
 **Two conventions:**
 
-1. **Standard keys** (match `^\d+/[a-z0-9-]+$`): the local name must equal the key with the leading `\d+/` stripped and `-` replaced with `_`.
+1. **Standard keys** (match `^\d+/[a-z0-9_-]+$`): keys can contain both hyphens and underscores. The local name drops the leading number and slash, converts hyphens to underscores, and keeps existing underscores. For example, `1/com-active-directory-product_eng` requires `com_active_directory_product_eng`.
 2. **Legacy keys** (anything else): the local name must start with the prefix `legacy_`.
 
 Exceptions: `key = "spacelift"` permits local names `spacelift`, `spacelift_app`, and `spacelift_install`; `key = "account"` permits local name `account`.
